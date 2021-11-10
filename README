@@ -1,0 +1,16 @@
+tiny DBMS
+
+用Java实现一个DBMS
+0.1 版本的功能
+    只有一个数据库default
+    数据库基本能力：
+        DML 支持SELECT，INSERT，UPDATE，DELETE
+            SELECT 支持列选择，where 条件，group by，order by，基本聚合函数sum，avg，max，min
+            支持多表join，支持子查询
+        DDL 支持CREATE TABLE，DROP TABLE，SHOW TABLES
+        数据类型支持整数，字符串，日期
+        没有索引
+        内存假设足够大，每个数据表大小都可以一次性装载到内存
+    工具包括：
+        一个命令行，可以支持输入基本命令DML，DDL
+
