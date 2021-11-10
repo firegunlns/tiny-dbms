@@ -3,7 +3,7 @@ v0.1. 基本功能
     week 1、存储引擎、
          2、schema内存结构
          3、ddl支持
-         4、operator
+         4、查询计划，operator栈
 
 v0.2.
 1、使用成熟的存储引擎比如rocksdb
