@@ -39,6 +39,9 @@ public class DBServer {
                         System.out.printf("client %d: closed.%n", clientId);
                         break;
                     }
+                    else if (args[0].equals("create") && args[1].equals("table")){
+                        // create table
+                    }
                     else {
                         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(s.getOutputStream()));
                         writer.write("bad command");

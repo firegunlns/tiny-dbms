@@ -9,6 +9,13 @@
     存储引擎
         用虚拟存储引擎接口，后续可以替换优化，也可以切换成其他成熟的引擎
 2、查询
+    支持的
+    create table tabname ( [colname col type,]+ )
+    drop table tabname
+    select col1, col2... from tabname where col= and
+    delete from tab where col=xxx
+    update table xxx
+
 
 3、界面
 
