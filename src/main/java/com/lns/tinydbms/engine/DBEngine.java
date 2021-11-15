@@ -1,33 +1,42 @@
 package com.lns.tinydbms.engine;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.annotation.JSONField;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DBEngine {
+    @JSONField(name="dir")
     String dir;
-    List<Table> tables;
+
+    @JSONField(name="tables")
+    List<Table> tables = new ArrayList<>();
+
+    public String getDir() {
+        return dir;
+    }
+
+    public void setDir(String dir) {
+        this.dir = dir;
+    }
+
+    public List<Table> getTables() {
+        return tables;
+    }
+
+    public void setTables(List<Table> tables) {
+        this.tables = tables;
+    }
 
     public boolean initDB(String path){
         File f = new File(path);
         if (f.exists() && f.canRead() && f.canWrite()) {
             dir = path;
-            try {
-                FileOutputStream fos = new FileOutputStream(f);
-                ObjectOutputStream oos = new ObjectOutputStream(fos);
-                oos.writeChars("tiny-db");
-                oos.write(tables.size());
-                for (Table tab: tables) {
-                    oos.writeObject(tab.getTableDef());
-                }
-                oos.close();
-                fos.close();
-
-                return true;
-            }catch (Exception e){
-
-            }
+            save();
         }
         return false;
     }
@@ -55,7 +64,39 @@ public class DBEngine {
         return true;
     }
 
+    public Table getTable(String name){
+        for (Table tab: this.tables){
+            if (tab.getName().equals(name)) {
+                return tab;
+            }
+        }
+        return null;
+    }
+
+    public boolean dropTable(String name){
+        for (Table tab: this.tables){
+            if (tab.getName().equals(name)) {
+                tab.drop();
+                tables.remove(tab);
+            }
+        }
+        return true;
+    }
+
     public boolean save(){
+        try {
+            String metaFile = dir + "/meta.json";
+            FileOutputStream fos = new FileOutputStream(metaFile);
+            String str = JSON.toJSONString(this);
+            byte[] data = str.getBytes();
+            fos.write(data);
+            fos.close();
+
+            return true;
+        }catch (Exception e){
+
+        }
+
         return true;
     }
 }

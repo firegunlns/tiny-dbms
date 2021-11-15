@@ -1,7 +1,14 @@
 package com.lns.tinydbms.engine;
 
-public class FieldDef {
+import com.alibaba.fastjson.annotation.JSONField;
+
+import java.io.Serializable;
+
+public class FieldDef implements Serializable {
+    @JSONField(name="name")
     String name;
+
+    @JSONField(name="field_type")
     FieldType fieldType;
 
     public String getName() {
