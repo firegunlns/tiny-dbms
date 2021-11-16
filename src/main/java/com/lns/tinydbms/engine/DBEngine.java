@@ -3,9 +3,7 @@ package com.lns.tinydbms.engine;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.annotation.JSONField;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,22 +30,40 @@ public class DBEngine {
         this.tables = tables;
     }
 
-    public boolean initDB(String path){
+    public static DBEngine initDB(String path){
         File f = new File(path);
         if (f.exists() && f.canRead() && f.canWrite()) {
-            dir = path;
-            save();
+            DBEngine engine = new DBEngine();
+            engine.setDir(path);
+            engine.save();
+
+            return engine;
         }
-        return false;
+        return null;
     }
 
-    public boolean openDB(String path){
+    public static DBEngine openDB(String path){
         File f = new File(path);
         if (f.exists() && f.canRead() && f.canWrite()) {
-            dir = path;
-            return true;
+
+            String metaFile = path + "/meta.json";
+            FileInputStream fis = null;
+            byte[] buf = new byte[1024*1024];
+            try {
+                fis = new FileInputStream(metaFile);
+                int n = fis.read(buf);
+                fis.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            String str = new String(buf);
+            DBEngine engine = (DBEngine)JSON.parse(new String(buf));
+            return engine;
         }
-        return false;
+        return null;
 
     }
 

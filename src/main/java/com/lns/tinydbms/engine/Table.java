@@ -14,6 +14,11 @@ public class Table implements Serializable {
     @JSONField(name="filename")
     String filename;
 
+    @JSONField(name="schema")
+    TableDef tableDef;
+
+    List<Record> row_cache;
+
     public String getFilename() {
         return filename;
     }
@@ -38,17 +43,6 @@ public class Table implements Serializable {
         this.tableDef = tableDef;
     }
 
-    public List<Record> getRows() {
-        return rows;
-    }
-
-    public void setRows(List<Record> rows) {
-        this.rows = rows;
-    }
-
-    @JSONField(name="schema")
-    TableDef tableDef;
-    List<Record> rows;
 
     public boolean drop(){
         File f = new File(filename);
@@ -56,12 +50,45 @@ public class Table implements Serializable {
         return true;
     }
 
-    public boolean insert(Record rec){
+    public boolean insert(byte[] data){
+        Record rec = new Record();
+        rec.setData(data);
+        rec.setDirty(true);
+        rec.setDeleted(false);
+
+        row_cache.add(rec);
+
         return false;
     }
 
-    public boolean delete(){
-        return false;
+    public boolean flush(){
+        for (Record rec: row_cache){
+            if (rec.isDirty() == true){
+                if (rec.isDeleted()){
+                    // delete the record
+
+                }
+                else if (rec.isNewrec()) {
+                    // insert a new
+
+                }
+                else {
+                    // update
+                }
+            }
+        }
+        return true;
+    }
+
+    public boolean delete(List<Integer> recIds){
+        for (Integer id: recIds) {
+            Record rec = new Record();
+            rec.setDirty(true);
+            rec.setDeleted(true);
+            row_cache.add(rec);
+        }
+
+        return true;
     }
 
     public boolean update(){
