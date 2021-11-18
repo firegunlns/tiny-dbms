@@ -60,7 +60,7 @@ public class DBEngine {
             }
 
             String str = new String(buf);
-            DBEngine engine = (DBEngine)JSON.parse(new String(buf));
+            DBEngine engine =JSON.parseObject(str, DBEngine.class);
             return engine;
         }
         return null;
@@ -74,6 +74,7 @@ public class DBEngine {
         tableDef.setFieldDefs(fieldDefList);
 
         newTable.setTableDef(tableDef);
+        newTable.open();
 
         this.tables.add(newTable);
 
