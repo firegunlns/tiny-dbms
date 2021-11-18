@@ -1,11 +1,13 @@
 package com.lns.tinydbms.engine;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.charset.StandardCharsets;
 
 public class IdxFile {
 
-    final static int TAG = 0x2367;
+    final static byte[] TAG = "idxf".getBytes(StandardCharsets.US_ASCII);
     private String fname;
     private RandomAccessFile rf = null;
 
@@ -41,15 +43,25 @@ public class IdxFile {
         return false;
     }
 
+    public boolean close(){
+        if (rf != null){
+            try {
+                rf.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return true;
+        }
+
+        return false;
+    }
+
     public boolean addRec(long pos){
         try {
             long file_len = rf.length();
 
             rf.seek(file_len);
-            rf.write((byte)(pos));
-            rf.write((byte)(pos >> 8));
-            rf.write((byte)(pos >> 16));
-            rf.write((byte)(pos >> 24));
+            rf.writeLong(pos);
 
             return true;
         }catch (Exception e){
@@ -57,5 +69,22 @@ public class IdxFile {
         }
 
         return false;
+    }
+
+    public long getAt(int pos){
+        try {
+            long file_len = rf.length();
+            long offset = TAG.length + pos * 8;
+
+            if (offset < file_len){
+                rf.seek(offset);
+                long tabPos = rf.readLong();
+                return tabPos;
+            }
+        }catch (Exception e){
+
+        }
+
+        return -1;
     }
 }

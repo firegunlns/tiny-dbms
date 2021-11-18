@@ -1,0 +1,1 @@
+{"dir":"./tmp/db1","status":"init","tables":[{"filename":"/Users/alan/work/learn/java/tiny-dbms/./tmp/db1/test","name":"test","schema":{"fieldDefs":[{"field_type":"INT","name":"id"},{"field_type":"VARCHAR","name":"name"},{"field_type":"VARCHAR","name":"address"}]}}]}

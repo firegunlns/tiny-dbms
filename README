@@ -14,3 +14,4 @@ tiny DBMS
     工具包括：
         一个命令行，可以支持输入基本命令DML，DDL
 
+tidb （cdc/binlog）-> kafka -> flink 或者flink直接写一小段代码mysql source（通过业务逻辑的时间戳形成流）

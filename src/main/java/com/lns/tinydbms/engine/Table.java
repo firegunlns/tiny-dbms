@@ -58,14 +58,26 @@ public class Table implements Serializable {
 
     public boolean open(){
         if (tableFile == null) {
-            tableFile = new TableFile(getName() + ".dat");
+            tableFile = new TableFile(getFilename() + ".dat");
             tableFile.open();
 
-            idxFile = new IdxFile(getName() + ".idx");
+            idxFile = new IdxFile(getFilename() + ".idx");
             idxFile.open();
         }
 
         return true;
+    }
+
+    public boolean close(){
+        if (tableFile != null) {
+            flush();
+            tableFile.close();
+            idxFile.close();
+
+            return true;
+        }
+
+        return false;
     }
 
     public boolean insert(HashMap<String, Object> data){
@@ -147,8 +159,33 @@ public class Table implements Serializable {
         return false;
     }
 
-    public Record query(){
+    public List<HashMap<String, Object>> scan(int start, int num){
         open();
-        return null;
+
+        List<HashMap<String, Object>> lst = new ArrayList<>();
+
+        for (int n = 0 ; n < num; n ++) {
+            long data_off = idxFile.getAt(start + n);
+            if (data_off >0) {
+                byte[] record = tableFile.readData(data_off);
+                try {
+                    ByteArrayInputStream bis = new ByteArrayInputStream(record);
+                    ObjectInputStream ois = new ObjectInputStream(bis);
+                    HashMap<String, Object> map = new HashMap<>();
+
+                    for (int i = 0; i < tableDef.fieldDefs.size(); i++) {
+                        FieldDef def = tableDef.fieldDefs.get(i);
+                        Object obj = ois.readObject();
+                        map.put(def.getName(), obj);
+                    }
+
+                    lst.add(map);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return lst;
     }
 }

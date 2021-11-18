@@ -1,15 +1,13 @@
 package com.lns.tinydbms.engine;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.RandomAccessFile;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 public class TableFile {
     private String filename;
     private RandomAccessFile rf = null;
 
-    int TAG = 0x2367;
+    final static byte[] TAG = "tabf".getBytes(StandardCharsets.US_ASCII);
 
     public TableFile(String fname){
         this.filename = fname;
@@ -42,14 +40,27 @@ public class TableFile {
         return false;
     }
 
+    public boolean close(){
+        if (rf != null) {
+            try {
+                rf.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
     public long appendRec(byte[] data){
         try {
             long file_len = rf.length();
             rf.seek(file_len);
 
             int data_len = data.length;
-            rf.write(data_len << 8 );
-            rf.write(data_len >> 8 );
+            rf.writeInt(data_len);
             rf.write(data);
             return file_len;
         }catch (Exception e){
@@ -57,6 +68,19 @@ public class TableFile {
         }
 
         return -1;
+    }
+
+    public byte[] readData(long pos){
+        try{
+            rf.seek(pos);
+            int rec_size = rf.readInt();
+            byte[] rec_data = new byte[rec_size];
+            rf.read(rec_data);
+            return rec_data;
+        }catch (Exception e){
+
+        }
+        return null;
     }
 
     public boolean deleteRec(int pos){
