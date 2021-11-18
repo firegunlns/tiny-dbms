@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-// v1.0 表的数据都可以存储在内存
+// v1.0 表的数据通过cache在内存
 public class Table implements Serializable {
     @JSONField(name="name")
     String name;
@@ -123,7 +123,7 @@ public class Table implements Serializable {
         open();
 
         for (Record rec: row_cache){
-            if (rec.isDirty() == true){
+            if (rec.isDirty()){
                 if (rec.isDeleted()){
                     // delete the record
 
