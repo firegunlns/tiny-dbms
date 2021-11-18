@@ -136,6 +136,8 @@ public class Table implements Serializable {
                 else {
                     // update
                 }
+
+                rec.setDirty(false);
             }
         }
         return true;
