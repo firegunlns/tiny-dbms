@@ -87,14 +87,14 @@ public class Test1 {
 
     @Test
     public void testScan2(){
-        testScan("./tmp/db1", "commodity", 2000, 100);
+        testScan("./tmp/db1", "commodity", 0, 10000000);
     }
 
     @Test
     public void testScanTiming(){
         String db = "./tmp/db1";
         int start = 0;
-        int num = 3000;
+        int num = 300000;
         String table = "commodity";
 
         DBEngine engine = DBEngine.open(db);
@@ -115,14 +115,18 @@ public class Test1 {
         Table test = engine.getTable(table);
 
         System.out.println("select * from test");
+        int count = 0;
         List<HashMap<String, Object>> lst = test.scan(start, num);
         for (HashMap<String, Object> map : lst){
+            count ++;
             for (int i = 0; i < test.getTableDef().getFieldDefs().size(); i++) {
                 String key = test.getTableDef().getFieldDefs().get(i).getName();
                 System.out.print(key + ":" + map.get(key) + ", ");
             }
             System.out.println();
         }
+
+        System.out.println("totoal " + count + " records.");
         engine.close();
     }
 
@@ -171,7 +175,7 @@ public class Test1 {
         // create table
         try{
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/test?user=root&password=R4e3w2q1!@");
+            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/openroad?user=root&password=11111111");
             PreparedStatement ps = conn.prepareStatement("select id, guid, commodity_no, name, commodity_pic from commodity");
             ResultSet rs = ps.executeQuery();
             while(rs.next()){

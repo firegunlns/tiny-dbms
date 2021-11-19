@@ -168,23 +168,24 @@ public class Table implements Serializable {
 
         for (int n = 0 ; n < num; n ++) {
             long data_off = idxFile.getAt(start + n);
-            if (data_off >0) {
-                byte[] record = tableFile.readData(data_off);
-                try {
-                    ByteArrayInputStream bis = new ByteArrayInputStream(record);
-                    ObjectInputStream ois = new ObjectInputStream(bis);
-                    HashMap<String, Object> map = new HashMap<>();
+            if (data_off <0)
+                break;
 
-                    for (int i = 0; i < tableDef.fieldDefs.size(); i++) {
-                        FieldDef def = tableDef.fieldDefs.get(i);
-                        Object obj = ois.readObject();
-                        map.put(def.getName(), obj);
-                    }
+            byte[] record = tableFile.readData(data_off);
+            try {
+                ByteArrayInputStream bis = new ByteArrayInputStream(record);
+                ObjectInputStream ois = new ObjectInputStream(bis);
+                HashMap<String, Object> map = new HashMap<>();
 
-                    lst.add(map);
-                } catch (Exception e) {
-                    e.printStackTrace();
+                for (int i = 0; i < tableDef.fieldDefs.size(); i++) {
+                    FieldDef def = tableDef.fieldDefs.get(i);
+                    Object obj = ois.readObject();
+                    map.put(def.getName(), obj);
                 }
+
+                lst.add(map);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
 
