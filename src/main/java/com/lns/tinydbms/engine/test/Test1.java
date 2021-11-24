@@ -53,6 +53,13 @@ public class Test1 {
         engine.close();
     }
 
+    @Test void testShowTables(){
+        DBEngine engine = DBEngine.open("./tmp/db1");
+        assert(engine != null);
+        engine.execSQL("show tables");
+        engine.close();
+    }
+
     @Test
     public void testListTables(){
         DBEngine engine = DBEngine.open("./tmp/db1");

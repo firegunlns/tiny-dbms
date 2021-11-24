@@ -12,11 +12,20 @@ public class MySQLVisitor extends SQLiteParserBaseVisitor<SQLStatment>{
     @Override public SQLStatment visitSql_stmt_list(SQLiteParser.Sql_stmt_listContext ctx) {
         List<ParseTree> tree = ctx.children;
 
-        return visitChildren(ctx);
+        MultiStatement stmt = new MultiStatement();
+        for (ParseTree sub : ctx.children){
+            SQLStatment st = sub.accept(this);
+            if (st instanceof DDLStatment | st instanceof DMLStatement){
+                stmt.getStatementlst().add(st);
+            }
+        }
+        return stmt;
     }
 
     @Override public SQLStatment visitSql_stmt(SQLiteParser.Sql_stmtContext ctx) {
-        return visitChildren(ctx);
+
+        SQLStatment stmt = visitChildren(ctx);
+        return stmt;
     }
 
     @Override public SQLStatment visitCreate_table_stmt(SQLiteParser.Create_table_stmtContext ctx) {

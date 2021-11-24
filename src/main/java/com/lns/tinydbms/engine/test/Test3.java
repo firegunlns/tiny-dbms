@@ -21,13 +21,18 @@ public class Test3 {
             SQLiteLexer lexer=new SQLiteLexer(input);
             CommonTokenStream tokens = new CommonTokenStream(lexer);
             SQLiteParser parser = new SQLiteParser(tokens);
-            SQLiteParser.ParseContext tree = parser.parse();
+            SQLiteParser.Sql_stmt_listContext tree = parser.sql_stmt_list();
 
-            //SQLiteParserBaseListener listener = new SQLiteParserBaseListener();
-            //SQLiteParserBaseVisitor<Void> tv = new SQLiteParserBaseVisitor<>();
-            //tv.visit(tree);
             MySQLVisitor tv = new MySQLVisitor();
             SQLStatment stmt = tv.visit(tree);
+            if (stmt instanceof MultiStatement){
+                for (SQLStatment st : ((MultiStatement)stmt).getStatementlst()){
+                    if (st instanceof CreateTableStatment){
+
+                    }
+                }
+                System.out.println("hello");
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

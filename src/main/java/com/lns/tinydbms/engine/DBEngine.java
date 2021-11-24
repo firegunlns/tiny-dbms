@@ -128,19 +128,24 @@ public class DBEngine {
     public boolean execSQL(String sql){
         try {
             CharStream input = CharStreams.fromString(sql);
-            SQLiteLexer lexer=new SQLiteLexer(input);
+            SQLiteLexer lexer = new SQLiteLexer(input);
             CommonTokenStream tokens = new CommonTokenStream(lexer);
             SQLiteParser parser = new SQLiteParser(tokens);
-            SQLiteParser.ParseContext tree = parser.parse();
+            SQLiteParser.Sql_stmt_listContext tree = parser.sql_stmt_list();
 
-            SQLiteParserBaseListener listener = new SQLiteParserBaseListener();
             MySQLVisitor tv = new MySQLVisitor();
-            SQLStatment statment = tv.visit(tree);
-            if (statment instanceof CreateTableStatment){
-                CreateTableStatment createTableStatment = (CreateTableStatment) statment;
-                createTable(createTableStatment.getTableDef().getName(), createTableStatment.getTableDef().fieldDefs);
-                return true;
+            SQLStatment stmt = tv.visit(tree);
+            if (stmt instanceof MultiStatement){
+                for (SQLStatment st : ((MultiStatement)stmt).getStatementlst()){
+                    if (st instanceof CreateTableStatment){
+                        CreateTableStatment createTableStatment = (CreateTableStatment) st;
+                        createTable(createTableStatment.getTableDef().getName(),
+                                createTableStatment.getTableDef().getFieldDefs());
+                    }
+                }
             }
+
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
         }
