@@ -4,6 +4,16 @@ import java.io.Serializable;
 import java.util.List;
 
 public class TableDef implements Serializable {
+    String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public List<FieldDef> getFieldDefs() {
         return fieldDefs;
     }

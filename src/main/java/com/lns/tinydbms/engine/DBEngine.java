@@ -2,6 +2,10 @@ package com.lns.tinydbms.engine;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.annotation.JSONField;
+import com.lns.tinydbms.parser.*;
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -119,6 +123,29 @@ public class DBEngine {
         }
         return null;
 
+    }
+
+    public boolean execSQL(String sql){
+        try {
+            CharStream input = CharStreams.fromString(sql);
+            SQLiteLexer lexer=new SQLiteLexer(input);
+            CommonTokenStream tokens = new CommonTokenStream(lexer);
+            SQLiteParser parser = new SQLiteParser(tokens);
+            SQLiteParser.ParseContext tree = parser.parse();
+
+            SQLiteParserBaseListener listener = new SQLiteParserBaseListener();
+            MySQLVisitor tv = new MySQLVisitor();
+            SQLStatment statment = tv.visit(tree);
+            if (statment instanceof CreateTableStatment){
+                CreateTableStatment createTableStatment = (CreateTableStatment) statment;
+                createTable(createTableStatment.getTableDef().getName(), createTableStatment.getTableDef().fieldDefs);
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
     }
 
     public boolean createTable(String name, List<FieldDef> fieldDefList){

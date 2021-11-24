@@ -1,6 +1,12 @@
 // Generated from /Users/alan/work/learn/java/tiny-dbms/src/main/java/com/lns/tinydbms/parser/SQLiteParser.g4 by ANTLR 4.9.2
 package com.lns.tinydbms.parser;
+import com.lns.tinydbms.engine.FieldDef;
+import com.lns.tinydbms.engine.FieldType;
+import com.lns.tinydbms.engine.TableDef;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class provides an empty implementation of {@link SQLiteParserVisitor},
@@ -17,7 +23,10 @@ public class SQLiteParserBaseVisitor<T> extends AbstractParseTreeVisitor<T> impl
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitParse(SQLiteParser.ParseContext ctx) { return visitChildren(ctx); }
+	@Override public T visitParse(SQLiteParser.ParseContext ctx) {
+		System.out.println("enter parse");
+		return visitChildren(ctx);
+	}
 	/**
 	 * {@inheritDoc}
 	 *
@@ -108,7 +117,8 @@ public class SQLiteParserBaseVisitor<T> extends AbstractParseTreeVisitor<T> impl
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitCreate_table_stmt(SQLiteParser.Create_table_stmtContext ctx) { return visitChildren(ctx); }
+	@Override public T visitCreate_table_stmt(SQLiteParser.Create_table_stmtContext ctx) {return visitChildren(ctx); }
+
 	/**
 	 * {@inheritDoc}
 	 *
@@ -297,7 +307,9 @@ public class SQLiteParserBaseVisitor<T> extends AbstractParseTreeVisitor<T> impl
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitSelect_stmt(SQLiteParser.Select_stmtContext ctx) { return visitChildren(ctx); }
+	@Override public T visitSelect_stmt(SQLiteParser.Select_stmtContext ctx) {
+		return visitChildren(ctx);
+	}
 	/**
 	 * {@inheritDoc}
 	 *

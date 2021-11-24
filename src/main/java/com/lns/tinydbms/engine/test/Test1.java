@@ -22,6 +22,13 @@ public class Test1 {
     }
 
     @Test
+    public void testSQLCreateTable(){
+        DBEngine engine = DBEngine.open("./tmp/db1");
+        engine.execSQL("create table student(id int, name varchar(32), age int);");
+        engine.close();
+    }
+
+    @Test
     public void testCreateTable(){
         DBEngine engine = DBEngine.open("./tmp/db1");
         assert(engine != null);
