@@ -24,7 +24,24 @@ public class Test1 {
     @Test
     public void testSQLCreateTable(){
         DBEngine engine = DBEngine.open("./tmp/db1");
-        engine.execSQL("create table student(id int, name varchar(32), age int);");
+        engine.execSQL("create table student(id int, name varchar(32), age int, addr varchar(128));");
+        engine.execSQL("create table employee(id int, name varchar(32), level int );");
+        engine.close();
+    }
+
+    @Test
+    public void testSQLDropTable(){
+        DBEngine engine = DBEngine.open("./tmp/db1");
+        assert (engine != null);
+        engine.execSQL("drop table employee;");
+        engine.close();
+    }
+
+    @Test
+    public void testSQLSelect1(){
+        DBEngine engine = DBEngine.open("./tmp/db1");
+        assert (engine != null);
+        engine.execSQL("select * from commodity where id > 3");
         engine.close();
     }
 
@@ -53,22 +70,19 @@ public class Test1 {
         engine.close();
     }
 
-    @Test void testShowTables(){
-        DBEngine engine = DBEngine.open("./tmp/db1");
-        assert(engine != null);
-        engine.execSQL("show tables");
-        engine.close();
-    }
-
     @Test
     public void testListTables(){
         DBEngine engine = DBEngine.open("./tmp/db1");
         assert(engine != null);
         List<Table> tables = engine.getTables();
         for (Table tab : tables){
-            System.out.print("table " + tab.getName() + "( ");
+            int num = 0;
+            System.out.print("table " + tab.getName() + "(");
             for (FieldDef fld : tab.getTableDef().getFieldDefs()){
-                System.out.print(fld.getName() + " " + fld.getFieldType().name() + ",");
+                num ++;
+                System.out.print(fld.getName() + " " + fld.getFieldType().name());
+                if (num != tab.getTableDef().getFieldDefs().size())
+                    System.out.print(", ");
             }
             System.out.println(")");
         }

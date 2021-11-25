@@ -1,16 +1,10 @@
 package com.lns.tinydbms.engine.test;
 
-import com.lns.tinydbms.engine.SQLEngine;
 import com.lns.tinydbms.parser.*;
-import org.antlr.v4.runtime.ANTLRFileStream;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.tree.*;
 import org.junit.Test;
-
-import java.io.IOException;
-import java.util.List;
 
 public class Test3 {
 
@@ -27,7 +21,7 @@ public class Test3 {
             SQLStatment stmt = tv.visit(tree);
             if (stmt instanceof MultiStatement){
                 for (SQLStatment st : ((MultiStatement)stmt).getStatementlst()){
-                    if (st instanceof CreateTableStatment){
+                    if (st instanceof CreateTableStatement){
 
                     }
                 }

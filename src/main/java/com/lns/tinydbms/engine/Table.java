@@ -51,8 +51,12 @@ public class Table implements Serializable {
 
 
     public boolean drop(){
-        File f = new File(filename);
-        f.delete();
+        close();
+        File f_dat = new File(getFilename() + ".dat");
+        f_dat.delete();
+        File f_idx = new File(getFilename() + ".idx");
+        f_idx.delete();
+
         return true;
     }
 

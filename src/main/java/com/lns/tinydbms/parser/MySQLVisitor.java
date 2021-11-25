@@ -9,13 +9,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MySQLVisitor extends SQLiteParserBaseVisitor<SQLStatment>{
-    @Override public SQLStatment visitSql_stmt_list(SQLiteParser.Sql_stmt_listContext ctx) {
-        List<ParseTree> tree = ctx.children;
+    @Override public SQLStatment visitDrop_stmt(SQLiteParser.Drop_stmtContext ctx) {
+        DropStatement dropStatement = new DropStatement();
+        dropStatement.setNotExist(ctx.EXISTS_() != null);
+        dropStatement.setTarget(ctx.any_name().getText());
+        if (ctx.TABLE_() != null)
+            dropStatement.setTargetType("table");
+        else if (ctx.VIEW_() != null)
+            dropStatement.setTargetType("view");
+        else if (ctx.INDEX_() != null)
+            dropStatement.setTargetType("index");
 
+        return dropStatement;
+    }
+
+    @Override public SQLStatment visitSql_stmt_list(SQLiteParser.Sql_stmt_listContext ctx) {
         MultiStatement stmt = new MultiStatement();
         for (ParseTree sub : ctx.children){
             SQLStatment st = sub.accept(this);
-            if (st instanceof DDLStatment | st instanceof DMLStatement){
+            if (st instanceof DDLStatement | st instanceof DMLStatement){
                 stmt.getStatementlst().add(st);
             }
         }
@@ -54,7 +66,7 @@ public class MySQLVisitor extends SQLiteParserBaseVisitor<SQLStatment>{
             System.out.print(col.column_name().getText() + " " + col.type_name().getText() + ",");
         }
 
-        CreateTableStatment stmt = new CreateTableStatment();
+        CreateTableStatement stmt = new CreateTableStatement();
         stmt.setTableDef(tableDef);
         return stmt;
     }

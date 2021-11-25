@@ -2,7 +2,7 @@ package com.lns.tinydbms.parser;
 
 import com.lns.tinydbms.engine.TableDef;
 
-public class CreateTableStatment extends DDLStatment {
+public class CreateTableStatement extends DDLStatement {
     TableDef tableDef;
 
     public TableDef getTableDef() {

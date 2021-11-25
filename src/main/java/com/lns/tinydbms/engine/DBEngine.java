@@ -137,10 +137,26 @@ public class DBEngine {
             SQLStatment stmt = tv.visit(tree);
             if (stmt instanceof MultiStatement){
                 for (SQLStatment st : ((MultiStatement)stmt).getStatementlst()){
-                    if (st instanceof CreateTableStatment){
-                        CreateTableStatment createTableStatment = (CreateTableStatment) st;
-                        createTable(createTableStatment.getTableDef().getName(),
-                                createTableStatment.getTableDef().getFieldDefs());
+                    if (st instanceof CreateTableStatement){
+                        CreateTableStatement createTableStatement = (CreateTableStatement) st;
+                        createTable(createTableStatement.getTableDef().getName(),
+                                createTableStatement.getTableDef().getFieldDefs());
+                    }
+                    else if (st instanceof DropStatement){
+                        DropStatement dropStatement = (DropStatement) st;
+                        if (dropStatement.getTargetType().equals("table")){
+                            return dropTable(dropStatement.getTarget());
+                        }
+                        else if (dropStatement.getTargetType().equals("database")){
+                            return dropDB(dropStatement.getTarget());
+                        }
+                        else if (dropStatement.getTargetType().equals("database")){
+                            return dropIndex(dropStatement.getTarget());
+                        }
+                    }
+                    else if (st instanceof SelectStatement){
+                        SelectStatement selectStatement = (SelectStatement)st;
+                        doSelect(selectStatement);
                     }
                 }
             }
@@ -150,6 +166,18 @@ public class DBEngine {
             e.printStackTrace();
         }
 
+        return false;
+    }
+
+    private void doSelect(SelectStatement selectStatement){
+
+    }
+
+    private boolean dropIndex(String target) {
+        return false;
+    }
+
+    private boolean dropDB(String target) {
         return false;
     }
 
@@ -183,6 +211,7 @@ public class DBEngine {
             if (tab.getName().equals(name)) {
                 tab.drop();
                 tables.remove(tab);
+                break;
             }
         }
         return true;
